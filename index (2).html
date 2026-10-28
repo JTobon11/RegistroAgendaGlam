@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Formulario de registro</title>
+<style>
+:root{--card:rgba(255,255,255,.92);--text:#1f2937;--muted:#6b7280;--line:#d1d5db;--accent:#e8590c;--accent2:#c2410c;--panel:#ffffff;--input:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:rgba(24,24,32,.88);--text:#f3f4f6;--muted:#9ca3af;--line:#3f3f46;--panel:#18181f;--input:#26262f}}
+:root[data-theme="dark"]{--card:rgba(24,24,32,.88);--text:#f3f4f6;--muted:#9ca3af;--line:#3f3f46;--panel:#18181f;--input:#26262f}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--text);background-color:#1e1b4b;
+background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%231e1b4b'/><stop offset='.5' stop-color='%23c2410c'/><stop offset='1' stop-color='%23fbbf24'/></linearGradient></defs><rect width='1200' height='800' fill='url(%23s)'/><circle cx='850' cy='470' r='110' fill='%23fef3c7' opacity='.9'/><path d='M0 620 L180 430 L320 560 L520 340 L720 580 L900 420 L1200 640 L1200 800 L0 800Z' fill='%23312e81' opacity='.85'/><path d='M0 700 L240 560 L420 660 L640 520 L860 680 L1050 580 L1200 700 L1200 800 L0 800Z' fill='%231e1b4b'/></svg>");
+background-size:cover;background-position:center;background-attachment:fixed}
+header{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;z-index:5}
+header h1{margin:0;font-size:1.1rem;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.burger{background:rgba(255,255,255,.9);border:0;border-radius:10px;width:46px;height:46px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;position:relative}
+.burger span{display:block;width:22px;height:3px;background:#1f2937;border-radius:2px}
+.badge{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+main{min-height:100%;display:flex;align-items:center;justify-content:center;padding:80px 16px 32px}
+form{background:var(--card);backdrop-filter:blur(8px);border-radius:18px;padding:28px;width:100%;max-width:460px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+form h2{margin:0 0 4px;font-size:1.5rem}
+form p{margin:0 0 18px;color:var(--muted);font-size:.9rem}
+label{display:block;font-size:.85rem;font-weight:600;margin:12px 0 5px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;background:var(--input);color:var(--text)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+textarea{resize:vertical;min-height:70px}
+.row{display:flex;gap:10px}.row>div{flex:1}
+.actions{display:flex;gap:10px;margin-top:20px}
+button.btn{flex:1;padding:12px;border:0;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+.save{background:var(--accent);color:#fff}.save:hover{background:var(--accent2)}
+.clear{background:transparent;color:var(--text);border:1px solid var(--line)!important}
+.msg{margin-top:12px;font-size:.88rem;min-height:1.2em;color:#15803d;font-weight:600}
+/* Panel lateral */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:8}
+.overlay.open{opacity:1;pointer-events:auto}
+aside{position:fixed;top:0;right:0;height:100%;width:min(640px,100%);background:var(--panel);z-index:9;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:-10px 0 40px rgba(0,0,0,.4)}
+aside.open{transform:none}
+.ahead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.ahead h3{margin:0}
+.xbtn{background:none;border:0;font-size:1.8rem;line-height:1;cursor:pointer;color:var(--text)}
+.tools{display:flex;gap:8px;margin-bottom:10px}
+.tools button{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font:inherit;font-size:.85rem}
+.wrap{overflow:auto;flex:1;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.85rem;min-width:520px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{position:sticky;top:0;background:var(--accent);color:#fff}
+td.del button{background:none;border:0;color:#dc2626;cursor:pointer;font-size:1rem}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Registro de datos</h1>
+  <button class="burger" id="openBtn" aria-label="Ver registros">
+    <span></span><span></span><span></span>
+    <em class="badge" id="badge">0</em>
+  </button>
+</header>
+
+<main>
+  <form id="form" autocomplete="off">
+    <h2>Rellena el formulario</h2>
+    <p>Los datos se guardan en la tabla del menú ☰ (arriba a la derecha).</p>
+
+    <label for="nombre">Nombre completo</label>
+    <input id="nombre" required placeholder="Ej: María Pérez">
+
+    <label for="correo">Correo electrónico</label>
+    <input id="correo" type="email" required placeholder="maria@correo.com">
+
+    <div class="row">
+      <div><label for="tel">Teléfono</label><input id="tel" type="tel" placeholder="300 123 4567"></div>
+      <div><label for="fecha">Fecha</label><input id="fecha" type="date"></div>
+    </div>
+
+    <label for="ciudad">Ciudad</label>
+    <select id="ciudad">
+      <option value="">Selecciona…</option>
+      <option>Medellín</option><option>Bogotá</option><option>Cali</option>
+      <option>Barranquilla</option><option>Otra</option>
+    </select>
+
+    <label for="mensaje">Comentario</label>
+    <textarea id="mensaje" placeholder="Escribe algo…"></textarea>
+
+    <div class="actions">
+      <button type="submit" class="btn save">Guardar</button>
+      <button type="button" class="btn clear" id="clearBtn">Limpiar</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </form>
+</main>
+
+<div class="overlay" id="overlay"></div>
+<aside id="panel" aria-hidden="true">
+  <div class="ahead"><h3>Datos guardados</h3><button class="xbtn" id="closeBtn" aria-label="Cerrar">×</button></div>
+  <div class="tools">
+    <button id="csvBtn">Descargar CSV</button>
+    <button id="wipeBtn">Borrar todo</button>
+  </div>
+  <div class="wrap" id="tableWrap"></div>
+</aside>
+
+<script>
+(function(){
+  var KEY="registros_formulario";
+  var rows=[];
+  var ids=["nombre","correo","tel","fecha","ciudad","mensaje"];
+  var $=function(i){return document.getElementById(i)};
+
+  try{var s=localStorage.getItem(KEY);if(s)rows=JSON.parse(s)||[]}catch(e){rows=[]}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify(rows))}catch(e){}}
+
+  function esc(t){var d=document.createElement("div");d.textContent=t==null?"":t;return d.innerHTML}
+
+  function render(){
+    $("badge").textContent=rows.length;
+    if(!rows.length){$("tableWrap").innerHTML='<div class="empty">Aún no hay registros.</div>';return}
+    var h="<table><thead><tr><th>#</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Fecha</th><th>Ciudad</th><th>Comentario</th><th></th></tr></thead><tbody>";
+    rows.forEach(function(r,i){
+      h+="<tr><td>"+(i+1)+"</td><td>"+esc(r.nombre)+"</td><td>"+esc(r.correo)+"</td><td>"+esc(r.tel)+"</td><td>"+esc(r.fecha)+"</td><td>"+esc(r.ciudad)+"</td><td>"+esc(r.mensaje)+'</td><td class="del"><button data-i="'+i+'" title="Eliminar">🗑</button></td></tr>';
+    });
+    $("tableWrap").innerHTML=h+"</tbody></table>";
+  }
+
+  function openPanel(o){
+    $("panel").classList.toggle("open",o);
+    $("overlay").classList.toggle("open",o);
+    $("panel").setAttribute("aria-hidden",o?"false":"true");
+  }
+
+  $("form").addEventListener("submit",function(e){
+    e.preventDefault();
+    var r={};ids.forEach(function(k){r[k]=$(k).value.trim()});
+    rows.push(r);persist();render();
+    $("form").reset();
+    $("msg").textContent="✓ Guardado. Míralo en el menú ☰";
+    setTimeout(function(){$("msg").textContent=""},3000);
+  });
+  $("clearBtn").addEventListener("click",function(){$("form").reset();$("msg").textContent=""});
+  $("openBtn").addEventListener("click",function(){openPanel(true)});
+  $("closeBtn").addEventListener("click",function(){openPanel(false)});
+  $("overlay").addEventListener("click",function(){openPanel(false)});
+  $("tableWrap").addEventListener("click",function(e){
+    var b=e.target.closest("button[data-i]");if(!b)return;
+    rows.splice(+b.dataset.i,1);persist();render();
+  });
+  $("wipeBtn").addEventListener("click",function(){
+    if(rows.length&&confirm("¿Borrar todos los registros?")){rows=[];persist();render()}
+  });
+  $("csvBtn").addEventListener("click",function(){
+    if(!rows.length)return;
+    var csv=["nombre,correo,tel,fecha,ciudad,mensaje"].concat(rows.map(function(r){
+      return ids.map(function(k){return '"'+String(r[k]||"").replace(/"/g,'""')+'"'}).join(",");
+    })).join("\n");
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv"}));
+    a.download="registros.csv";a.click();
+  });
+  render();
+})();
+</script>
+</body>
+</html>
